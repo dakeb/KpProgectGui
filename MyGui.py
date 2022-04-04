@@ -11,7 +11,6 @@ import time
 import pyodbc
 import re
 
-
 LOG_LINE_NUM = 0
 
 init_window = Tk()
@@ -40,8 +39,10 @@ def fileopen():
     return filename
 
 
-Entry(frameXy, width=40, textvariable=filename).grid(row=0, column=0, padx=5)
 
+Entry(frameXy, width=30, textvariable=filename).grid(row=0, column=0, padx=5)
+# Entry(frameXy, width=30).grid(row=0, column=2,padx=5)
+# tablename = Entry().get()
 
 def fileoperate():
     # 读取第一行之后的数据
@@ -145,19 +146,20 @@ def Backtracking(k, c, num):
         status[k] = 0
         Backtracking(k + 1, c, num)
 
-N = 500     ##迭代次数
-Pc = 0.8    ##交配概率
-Pm = 0.15   ##变异概率
+
+N = 500  ##迭代次数
+Pc = 0.8  ##交配概率
+Pm = 0.15  ##变异概率
 
 
 ## 遗传算法：
 # 初始化,N为种群规模，n为染色体长度
-def init(N,n):
+def init(N, n):
     C = []
     for i in range(N):
         c = []
         for j in range(n):
-            a = np.random.randint(0,2)
+            a = np.random.randint(0, 2)
             c.append(a)
         C.append(c)
     return C
@@ -166,35 +168,35 @@ def init(N,n):
 ##评估函数
 # x(i)取值为1表示被选中，取值为0表示未被选中
 # w(i)表示各个分量的重量，v（i）表示各个分量的价值，w表示最大承受重量
-def fitness(C,N,n,W,V,w):
-    S = []##用于存储被选中的下标
-    F = []## 用于存放当前该个体的最大价值
+def fitness(C, N, n, W, V, w):
+    S = []  ##用于存储被选中的下标
+    F = []  ## 用于存放当前该个体的最大价值
     for i in range(N):
         s = []
         h = 0  # 重量
         f = 0  # 价值
         for j in range(n):
-            if C[i][j]==1:
-                if h+W[j]<=w:
-                    h=h+W[j]
-                    f = f+V[j]
+            if C[i][j] == 1:
+                if h + W[j] <= w:
+                    h = h + W[j]
+                    f = f + V[j]
                     s.append(j)
         S.append(s)
         F.append(f)
-    return S,F
+    return S, F
 
 
 ##适应值函数,B位返回的种族的基因下标，y为返回的最大值
-def best_x(F,S,N):
+def best_x(F, S, N):
     y = 0
     x = 0
-    B = [0]*N
+    B = [0] * N
     for i in range(N):
-        if y<F[i]:
+        if y < F[i]:
             x = i
         y = F[x]
         B = S[x]
-    return B,y
+    return B, y
 
 
 ## 计算比率
@@ -254,7 +256,7 @@ def vari(X, m, n, p):
         for j in range(n):
             q = np.random.rand()
             if q < p:
-                X[i][j] = np.random.randint(0,2)
+                X[i][j] = np.random.randint(0, 2)
 
     return X
 
@@ -342,6 +344,11 @@ def goes():  # 处理事件
         data_Text.insert(2.0, '\n')
         data_Text.insert(2.0, '运行时间为：')
         data_Text.insert(2.8, time_sum)
+
+        result = "贪心算法：最优解：" + str(ret1) + "，" + "求解时间：" + str(time_sum)
+        file = open('resultG.txt', 'w')
+        file.write(result)
+        file.close()
         write_log_to_Text("使用贪心算法求解成功")
     elif Contain.get() == "动态规划算法":
         time_start = timer()
@@ -357,6 +364,10 @@ def goes():  # 处理事件
         data_Text.insert(2.0, '\n')
         data_Text.insert(2.0, '运行时间为：')
         data_Text.insert(2.8, time_sum)
+        result = "动态规划：最优解：" + str(ret2) + "，" + "求解时间：" + str(time_sum)
+        file = open('resultD.txt', 'w')
+        file.write(result)
+        file.close()
         write_log_to_Text("使用动态规划算法求解成功")
     elif Contain.get() == "回溯法":
         time_start = timer()
@@ -372,6 +383,10 @@ def goes():  # 处理事件
         data_Text.insert(2.0, '\n')
         data_Text.insert(2.0, '运行时间为：')
         data_Text.insert(2.8, time_sum)
+        result = "回溯法：最优解：" + str(Bv) + "，" + "求解时间：" + str(time_sum)
+        file = open('resultD.txt', 'w')
+        file.write(result)
+        file.close()
         write_log_to_Text("使用回溯法求解成功")
     elif Contain.get() == "遗传算法":
         time_start = timer()
@@ -402,6 +417,10 @@ def goes():  # 处理事件
         data_Text.insert(2.0, '\n')
         data_Text.insert(2.0, '运行时间为：')
         data_Text.insert(2.8, time_sum)
+        result = "遗传算法：最优解：" + str(y) + "，" + "求解时间：" + str(time_sum)
+        file = open('resultR.txt', 'w')
+        file.write(result)
+        file.close()
         write_log_to_Text("使用遗传算法求解成功")
 
 
@@ -410,30 +429,35 @@ def clear():
     LB1.delete(0, END)
     LB2.delete(0, END)
 
-
-# 数据库
 def db():
+    # 数据库
     sqlconn = pyodbc.connect(DRIVER='{ODBC Driver 17 for SQL Server}',
-                             SERVER='xueli',
-                             DATABASE='SR',
-                             Trusted_Connection='yes'
-                             )
+                                 SERVER='xueli',
+                                 DATABASE='SR',
+                                 Trusted_Connection='yes'
+                                 )
     # 连接数据库
+    sql_createTb = "CREATE TABLE  yk(\
+                       Weight varchar(32) not null,\
+                       Value varchar(255) not null,)\
+                        "
+
     cursor = sqlconn.cursor()  # 打开游标
-    cursor.execute("CREATE TABLE hb(\
-                   Weight varchar(32) not null,\
-                   Value varchar(255) not null,)\
-                   ")  # 执行SQL语句
+    # cursor.execute("CREATE TABLE"+tablename+" "+"(\
+    #                    Weight varchar(32) not null,\
+    #                    Value varchar(255) not null,)\
+    #                    ")  # 执行SQL语句
+    cursor.execute(sql_createTb)  # 执行SQL语句
     with open(filename.get()) as f:
-        datas=f.readlines()[1:]
+        datas = f.readlines()[1:]
 
     for data in datas:
         txt = re.split(r'[;,\s]\s*', data)
         Weight = txt[0]
         Value = txt[1]
-        cursor.execute("INSERT INTO hb(Weight,Value)VALUES('%s','%s')"%(Weight,Value))
+        cursor.execute("INSERT INTO yk(Weight,Value)VALUES('%s','%s')" % (Weight, Value))
     print("数据库插入完成！")
-    cursor.execute("SELECT * FROM hb")  # 执行sql语句
+    cursor.execute("SELECT * FROM  yk")  # 执行sql语句
     queryResult = cursor.fetchall()  # 查询执行的sql操作
     print(queryResult)
     sqlconn.commit()
@@ -451,7 +475,7 @@ Button(frameX, text='求最优解', width=20, height=2, command=goes).grid(row=1
 Button(frameX, text='画散点图', width=20, height=2, command=painter).grid(row=2, column=1, pady=15)  # 画散点图按钮
 Button(frameX, text='重量比排序', width=20, height=2, command=sort).grid(row=3, column=1, pady=15)  # 排序按钮
 Button(frameXy, text='选择文件', width=10, command=fileopen).grid(row=0, column=1, pady=10, padx=4)  # 选择文件
-Button(frameXy, text='提交到数据库', width=10,command=db).grid(row=0, column=2, pady=10, padx=10)
+Button(frameXy, text='提交到数据库', width=10, command=db).grid(row=0, column=2, pady=10, padx=10)
 Cleat = Button(frameY, text="清屏", width=20, command=clear)
 Cleat.grid(row=4, column=1, columnspan=3)
 
