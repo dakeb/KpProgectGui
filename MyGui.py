@@ -21,7 +21,7 @@ init_window.geometry('650x500+40+40')
 frameX = Frame(init_window, height=200, relief=GROOVE)  # 操作选择界面
 frameXy = Frame(init_window, height=200)  # 文件选择界面
 frameY = Frame(init_window, width=500, height=100)  # 最优解输出界面
-frameYx = Frame(init_window, width=750, height=200, bg="pink", pady=20)  # 日志界面
+frameYx = Frame(init_window, width=750, height=200, pady=20)  # 日志界面
 
 frameX.grid(row=0, column=0, padx=20)  # 操作选择界面
 frameXy.grid(row=1, column=0, columnspan=2)  # 文件选择界面
@@ -59,20 +59,32 @@ def fileoperate():
 
 def painter():
     resx = fileoperate()
-    mpl.rcParams['font.family'] = 'sans-serif'
-    mpl.rcParams['font.sans-serif'] = 'NSimSun,Times New Roman'
 
     print(resx[0])
     x, y = np.loadtxt(resx[0], delimiter=' ', unpack=True)
     plt.plot(x, y, '.', color='blue')
 
-    plt.xlabel('wight')
-    plt.ylabel('value')
+    plt.xlabel('X-wight')
+    plt.ylabel('Y-value')
     plt.title('scatter plot')
     plt.legend()
     write_log_to_Text("绘制散点图成功")
     plt.show()
 
+
+def painterzhuzhuangtu():
+    resx = fileoperate()
+
+    print(resx[0])
+    x, y = np.loadtxt(resx[0], delimiter=' ', unpack=True)
+    plt.figure()
+    plt.bar(x,y,0.2,color="green")
+    plt.xlabel("X-weight")
+    plt.ylabel("Y-value")
+    plt.title("bar chart")
+
+    write_log_to_Text("绘制柱状图成功")
+    plt.show()
 
 # 贪心算法：
 def GreedyAlgo(item, c, num):
@@ -468,12 +480,13 @@ def db():
 
 Choose = StringVar()
 Contain = Combobox(frameX, textvariable=Choose, width=19)
-Contain.grid(row=0, column=1, pady=20)
+Contain.grid(row=0, column=0,columnspan=2, pady=20)
 Contain["values"] = ("点击选择算法", "贪心算法", "动态规划算法", "回溯法", "遗传算法")
 Contain.current(0)
-Button(frameX, text='求最优解', width=20, height=2, command=goes).grid(row=1, column=1, pady=20)
-Button(frameX, text='画散点图', width=20, height=2, command=painter).grid(row=2, column=1, pady=15)  # 画散点图按钮
-Button(frameX, text='重量比排序', width=20, height=2, command=sort).grid(row=3, column=1, pady=15)  # 排序按钮
+Button(frameX, text='求最优解', width=20, height=2, command=goes).grid(row=1, column=0,columnspan=2, pady=20)
+Button(frameX, text='画散点图', width=10, height=2, command=painter).grid(row=2, column=0)  # 画散点图按钮
+Button(frameX, text='画柱状图', width=10, height=2, command=painterzhuzhuangtu).grid(row=2,column=1)  # 画柱状图
+Button(frameX, text='重量比排序', width=20, height=2, command=sort).grid(row=3, column=0, columnspan=2, pady=15)  # 排序按钮
 Button(frameXy, text='选择文件', width=10, command=fileopen).grid(row=0, column=1, pady=10, padx=4)  # 选择文件
 Button(frameXy, text='提交到数据库', width=10, command=db).grid(row=0, column=2, pady=10, padx=10)
 Cleat = Button(frameY, text="清屏", width=20, command=clear)
